@@ -1,5 +1,8 @@
-#include <stdbool.h>
 #include <glib-2.0/glib.h>
+#include <stdbool.h>
+
+#include "command.h"
+
 /* scommand: comando simple.
  * Ejemplo: ls -l ej1.c > out < in
  * Se presenta como una secuencia de cadenas donde la primera se denomina
@@ -18,6 +21,10 @@
  * La interfaz es esencialmente la de una cola. A eso se le
  * agrega dos accesores/modificadores para redirección de entrada y salida.
  */
+
+struct scommand_s {
+  GQueue *gq;
+}
 
 typedef struct scommand_s * scommand;
 
