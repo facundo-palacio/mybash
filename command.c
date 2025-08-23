@@ -25,18 +25,21 @@
 typedef struct scommand_s * scommand;
 struct scommand_s {
   GQueue *gq;
-}
+};
 
 
 
 scommand scommand_new(void) {
-    return g_queue_new();
+  scommand new = malloc(sizeof(struct scommand_s));
+  new -> gq = g_queue_new();
+  return new;
 }
 
 scommand scommand_destroy(scommand self){
     g_queue_free(self->gq);
     free(self);
-    return self;
+    return NULL;
+
     
 }
 
