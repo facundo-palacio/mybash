@@ -20,14 +20,9 @@
 
 typedef struct scommand_s * scommand;
 
-scommand scommand_new(void);
-/*
- * Nuevo `scommand', sin comandos o argumentos y los redirectores vacíos
- *   Returns: nuevo comando simple sin ninguna cadena y redirectores vacíos.
- * Ensures: result != NULL && scommand_is_empty (result) &&
- *  scommand_get_redir_in (result) == NULL &&
- *  scommand_get_redir_out (result) == NULL
- */
+scommand scommand_new(void) {
+    return g_queue_new();
+}
 
 scommand scommand_destroy(scommand self);
 /*
