@@ -5,7 +5,6 @@
  * comando y desde la segunda se denominan argumentos.
  * Almacena dos cadenas que representan los redirectores de entrada y salida.
  * Cualquiera de ellos puede estar NULL indicando que no hay redirección.
- *
  * En general, todas las operaciones hacen que el TAD adquiera propiedad de
  * los argumentos que le pasan. Es decir, el llamador queda desligado de la
  * memoria utilizada, y el TAD se encarga de liberarla.
