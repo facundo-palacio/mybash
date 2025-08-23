@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <glib-2.0/glib.h>
 /* scommand: comando simple.
  * Ejemplo: ls -l ej1.c > out < in
  * Se presenta como una secuencia de cadenas donde la primera se denomina
@@ -24,13 +25,9 @@ scommand scommand_new(void) {
     return g_queue_new();
 }
 
-scommand scommand_destroy(scommand self);
-/*
- * Destruye `self'.
- *   self: comando simple a destruir.
- * Requires: self != NULL
- * Ensures: result == NULL
- */
+scommand scommand_destroy(scommand self){
+    return g_queue_free_full();
+}
 
 /* Modificadores */
 
