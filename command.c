@@ -195,6 +195,11 @@ char * scommand_to_string(const scommand self){
 
 typedef struct pipeline_s * pipeline;
 
+struct pipeline_s {
+  GQueue *gq_scommand;
+  bool run_in_foreground;
+};
+
 pipeline pipeline_new(void);
 /*
  * Nuevo `pipeline', sin comandos simples y establecido para que espere.
