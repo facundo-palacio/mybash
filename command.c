@@ -84,9 +84,11 @@ void scommand_pop_front(scommand self){
 
 void scommand_set_redir_in(scommand self, char * filename){
   assert(self!=NULL);
+  self->in = filename;
 }
 void scommand_set_redir_out(scommand self, char * filename){
   assert(self!=NULL);
+  self->out=filename; 
 }
 /*
  * Define la redirección de entrada (salida).
