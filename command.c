@@ -1,7 +1,10 @@
+#include <assert.h>
 #include <glib-2.0/glib.h>
 #include <stdbool.h>
-#include <assert.h>
+#include <stdio.h>
+
 #include "command.h"
+#include "strextra.h"
 
 /* scommand: comando simple.
  * Ejemplo: ls -l ej1.c > out < in
@@ -37,8 +40,8 @@ scommand scommand_new(void) {
     output_sc->out = NULL;
     assert(output_sc!=NULL);
     assert(scommand_is_empty(output_sc));
-    assert(scommand_get_redir_in(output_sc));
-    assert(scommand_get_redir_out(output_sc));
+    assert(scommand_get_redir_in(output_sc) == NULL);
+    assert(scommand_get_redir_out(output_sc) == NULL);
 
     return output_sc;
 }
@@ -59,7 +62,7 @@ void scommand_push_back(scommand self, char * argument){
   assert(self!=NULL);
   assert(argument!=NULL);
   g_queue_push_tail(self->gq,argument);
-  assert(!scommand_is_empty());
+  assert(!scommand_is_empty(self));
 }
 
 /*
@@ -116,7 +119,7 @@ unsigned int scommand_length(const scommand self){
 
   return g_queue_get_length(self->gq);
   
-  assert((scommand_length(self)==0)==scommand_is_empty());
+  assert((scommand_length(self)==0)==scommand_is_empty(self));
 }
 /*
  * Da la longitud de la secuencia cadenas que contiene el comando simple.
@@ -130,7 +133,7 @@ unsigned int scommand_length(const scommand self){
 char * scommand_front(const scommand self){
   assert(self!=NULL);
   assert(!scommand_is_empty(self));
-  assert(g_queue_peek_head(self->gq)!=NULL)
+  assert(g_queue_peek_head(self->gq)!=NULL);
   return g_queue_peek_head(self->gq);
 }
 /*
@@ -161,9 +164,17 @@ char * scommand_get_redir_out(const scommand self){
 
 char * scommand_to_string(const scommand self){
   assert(self!=NULL);
-
-
+  char *str = "";
+  GQueue *gq_aux = self->gq;
+  guint N = g_queue_get_length(gq_aux);
+  for(guint i=0; i<N; i++) {
+    if(i>0) {
+      str = strmerge(str, " ");
+    }
+    str = strmerge(str, g_queue_peek_nth(gq_aux,i));
+  }
   assert(scommand_is_empty(self)|| scommand_get_redir_in(self) ==NULL || scommand_get_redir_out(self)==NULL);
+  return str;
 }
 /* Preety printer para hacer debugging/logging.
  * Genera una representación del comando simple en un string (aka "serializar")
