@@ -31,27 +31,27 @@ struct scommand_s {
 };
 
 scommand scommand_new(void) {
-    GQueue *aux_gq = g_queue_new();
-    char *aux_in = NULL;
-    char *aux_out = NULL;
     scommand output_sc = malloc(sizeof(struct scommand_s));
-    output_sc->gq = aux_gq;
-    output_sc->in = aux_in;
-    output_sc->out = aux_out;
+    output_sc->gq = g_queue_new();
+    output_sc->in = NULL;
+    output_sc->out = NULL;
     return output_sc;
 }
 
 scommand scommand_destroy(scommand self){
     g_queue_free(self->gq);
+    free(self -> in);
+    free(self-> out);
     free(self);
     return NULL;
-
-    
 }
 
 /* Modificadores */
 
-void scommand_push_back(scommand self, char * argument);
+void scommand_push_back(scommand self, char * argument){
+  g_queue_push_tail(self->gq,argument);
+}
+
 /*
  * Agrega por detrás una cadena a la secuencia de cadenas.
  *   self: comando simple al cual agregarle la cadena.
@@ -60,7 +60,9 @@ void scommand_push_back(scommand self, char * argument);
  * Ensures: !scommand_is_empty()
  */
 
-void scommand_pop_front(scommand self);
+void scommand_pop_front(scommand self){
+    g_queue_pop_head(self ->gq);
+}
 /*
  * Quita la cadena de adelante de la secuencia de cadenas.
  *   self: comando simple al cual sacarle la cadena del frente.
@@ -79,7 +81,13 @@ void scommand_set_redir_out(scommand self, char * filename);
 
 /* Proyectores */
 
-bool scommand_is_empty(const scommand self);
+bool scommand_is_empty(const scommand self){
+  bool ret = false;
+  if (self!=NULL){
+  ret = g_queue_is_empty(self->gq);
+  }
+  return ret;
+}
 /*
  * Indica si la secuencia de cadenas tiene longitud 0.
  *   self: comando simple a decidir si está vacío.
