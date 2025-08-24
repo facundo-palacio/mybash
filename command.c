@@ -84,7 +84,7 @@ void scommand_set_redir_out(scommand self, char * filename);
 bool scommand_is_empty(const scommand self){
   bool ret = false;
   if (self!=NULL){
-  ret = g_queue_is_empty(self->gq);
+    ret = g_queue_is_empty(self->gq);
   }
   return ret;
 }
@@ -105,7 +105,9 @@ unsigned int scommand_length(const scommand self);
  *
  */
 
-char * scommand_front(const scommand self);
+char * scommand_front(const scommand self){
+  return g_queue_peek_head(self->gq);
+}
 /*
  * Toma la cadena de adelante de la secuencia de cadenas.
  *   self: comando simple al cual tomarle la cadena del frente.
