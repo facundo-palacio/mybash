@@ -1,6 +1,6 @@
 #include <glib-2.0/glib.h>
 #include <stdbool.h>
-
+#include <assert.h>
 #include "command.h"
 
 /* scommand: comando simple.
@@ -35,21 +35,31 @@ scommand scommand_new(void) {
     output_sc->gq = g_queue_new();
     output_sc->in = NULL;
     output_sc->out = NULL;
+    assert(output_sc!=NULL);
+    assert(scommand_is_empty(output_sc));
+    assert(scommand_get_redir_in(output_sc));
+    assert(scommand_get_redir_out(output_sc));
+
     return output_sc;
 }
 
 scommand scommand_destroy(scommand self){
+    assert(self !=NULL);
     g_queue_free(self->gq);
     free(self -> in);
     free(self-> out);
     free(self);
+    assert(self==NULL);
     return NULL;
 }
 
 /* Modificadores */
 
 void scommand_push_back(scommand self, char * argument){
+  assert(self!=NULL);
+  assert(argument!=NULL);
   g_queue_push_tail(self->gq,argument);
+  assert(!scommand_is_empty());
 }
 
 /*
@@ -61,7 +71,10 @@ void scommand_push_back(scommand self, char * argument){
  */
 
 void scommand_pop_front(scommand self){
+    assert(self!=NULL);
+    assert(!scommand_is_empty(self));
     g_queue_pop_head(self ->gq);
+
 }
 /*
  * Quita la cadena de adelante de la secuencia de cadenas.
@@ -69,8 +82,12 @@ void scommand_pop_front(scommand self){
  * Requires: self!=NULL && !scommand_is_empty(self)
  */
 
-void scommand_set_redir_in(scommand self, char * filename);
-void scommand_set_redir_out(scommand self, char * filename);
+void scommand_set_redir_in(scommand self, char * filename){
+  assert(self!=NULL);
+}
+void scommand_set_redir_out(scommand self, char * filename){
+  assert(self!=NULL);
+}
 /*
  * Define la redirección de entrada (salida).
  *   self: comando simple al cual establecer la redirección de entrada (salida).
@@ -82,11 +99,8 @@ void scommand_set_redir_out(scommand self, char * filename);
 /* Proyectores */
 
 bool scommand_is_empty(const scommand self){
-  bool ret = false;
-  if (self!=NULL){
-    ret = g_queue_is_empty(self->gq);
-  }
-  return ret;
+  assert(self!=NULL);
+  return g_queue_is_empty(self->gq);
 }
 /*
  * Indica si la secuencia de cadenas tiene longitud 0.
@@ -95,7 +109,12 @@ bool scommand_is_empty(const scommand self){
  * Requires: self!=NULL
  */
 
-unsigned int scommand_length(const scommand self);
+unsigned int scommand_length(const scommand self){
+  assert(self!=NULL);
+
+
+  assert((scommand_length(self)==0)==scommand_is_empty());
+}
 /*
  * Da la longitud de la secuencia cadenas que contiene el comando simple.
  *   self: comando simple a medir.
@@ -106,6 +125,9 @@ unsigned int scommand_length(const scommand self);
  */
 
 char * scommand_front(const scommand self){
+  assert(self!=NULL);
+  assert(!scommand_is_empty(self));
+  assert(g_queue_peek_head(self->gq)!=NULL)
   return g_queue_peek_head(self->gq);
 }
 /*
@@ -118,8 +140,12 @@ char * scommand_front(const scommand self){
  * Ensures: result!=NULL
  */
 
-char * scommand_get_redir_in(const scommand self);
-char * scommand_get_redir_out(const scommand self);
+char * scommand_get_redir_in(const scommand self){
+  assert(self!=NULL);
+}
+char * scommand_get_redir_out(const scommand self){
+  assert(self!=NULL);
+}
 /*
  * Obtiene los nombres de archivos a donde redirigir la entrada (salida).
  *   self: comando simple a decidir si está vacío.
@@ -128,7 +154,12 @@ char * scommand_get_redir_out(const scommand self);
  * Requires: self!=NULL
  */
 
-char * scommand_to_string(const scommand self);
+char * scommand_to_string(const scommand self){
+  assert(self!=NULL);
+
+
+  assert(scommand_is_empty(self)|| scommand_get_redir_in(self) ==NULL || scommand_get_redir_out(self)==NULL);
+}
 /* Preety printer para hacer debugging/logging.
  * Genera una representación del comando simple en un string (aka "serializar")
  *   self: comando simple a convertir.
