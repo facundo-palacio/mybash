@@ -114,7 +114,8 @@ bool scommand_is_empty(const scommand self){
 unsigned int scommand_length(const scommand self){
   assert(self!=NULL);
 
-
+  return g_queue_get_length(self->gq);
+  
   assert((scommand_length(self)==0)==scommand_is_empty());
 }
 /*
