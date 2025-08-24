@@ -144,9 +144,11 @@ char * scommand_front(const scommand self){
 
 char * scommand_get_redir_in(const scommand self){
   assert(self!=NULL);
+  return self->in;
 }
 char * scommand_get_redir_out(const scommand self){
   assert(self!=NULL);
+  return self->out;
 }
 /*
  * Obtiene los nombres de archivos a donde redirigir la entrada (salida).
