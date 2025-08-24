@@ -21,18 +21,24 @@
  * La interfaz es esencialmente la de una cola. A eso se le
  * agrega dos accesores/modificadores para redirección de entrada y salida.
  */
- 
+
 typedef struct scommand_s * scommand;
+
 struct scommand_s {
   GQueue *gq;
+  char *in;
+  char *out;
 };
 
-
-
 scommand scommand_new(void) {
-  scommand new = malloc(sizeof(struct scommand_s));
-  new -> gq = g_queue_new();
-  return new;
+    GQueue *aux_gq = g_queue_new();
+    char *aux_in = NULL;
+    char *aux_out = NULL;
+    scommand output_sc = malloc(sizeof(struct scommand_s));
+    output_sc->gq = aux_gq;
+    output_sc->in = aux_in;
+    output_sc->out = aux_out;
+    return output_sc;
 }
 
 scommand scommand_destroy(scommand self){
