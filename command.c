@@ -251,9 +251,10 @@ pipeline pipeline_new(void){
 
 pipeline pipeline_destroy(pipeline self){
   assert(self!=NULL);
-  //llenar el codigo aca
+  free(self->gq_scommand);
+  self = NULL;
   assert(self==NULL);
-  //return 
+  return self;
 }
 
 /*
