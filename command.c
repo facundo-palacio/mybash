@@ -46,6 +46,14 @@ scommand scommand_new(void) {
     return output_sc;
 }
 
+/*
+ * Nuevo `pipeline', sin comandos simples y establecido para que espere.
+ *   Returns: nuevo pipeline sin comandos simples y que espera.
+ * Ensures: result != NULL
+ *  && pipeline_is_empty(result)
+ *  && pipeline_get_wait(result)
+ */
+
 scommand scommand_destroy(scommand self){
     assert(self !=NULL);
     g_queue_free(self->gq);
@@ -55,6 +63,14 @@ scommand scommand_destroy(scommand self){
     assert(self==NULL);
     return NULL;
 }
+
+/*
+ * Destruye `self'.
+ *   self: tubería a a destruir.
+ * Requires: self != NULL
+ * Ensures: result == NULL
+ */
+
 
 /* Modificadores */
 
@@ -214,8 +230,18 @@ struct pipeline_s {
   bool run_in_foreground;
 };
 
-pipeline pipeline_new(void);
-/*
+pipeline pipeline_new(void){
+  pipeline result = malloc(sizeof(struct pipeline_s));
+  result->gq_scommand=NULL;
+  result->run_in_foreground=true;
+  
+  assert(result!=NULL);
+  assert(pipeline_is_empty(result));
+  assert(pipeline_get_wait(result));
+
+  return result;
+}
+  /*
  * Nuevo `pipeline', sin comandos simples y establecido para que espere.
  *   Returns: nuevo pipeline sin comandos simples y que espera.
  * Ensures: result != NULL
@@ -223,7 +249,13 @@ pipeline pipeline_new(void);
  *  && pipeline_get_wait(result)
  */
 
-pipeline pipeline_destroy(pipeline self);
+pipeline pipeline_destroy(pipeline self){
+  assert(self!=NULL);
+  //llenar el codigo aca
+  assert(self==NULL);
+  //return 
+}
+
 /*
  * Destruye `self'.
  *   self: tubería a a destruir.
@@ -233,7 +265,13 @@ pipeline pipeline_destroy(pipeline self);
 
 /* Modificadores */
 
-void pipeline_push_back(pipeline self, scommand sc);
+void pipeline_push_back(pipeline self, scommand sc){
+  assert(self != NULL);
+  assert(sc != NULL);
+  //llenar el codigo aca
+  assert(!pipeline_is_empty(self));
+}
+
 /*
  * Agrega por detrás un comando simple a la secuencia.
  *   self: pipeline al cual agregarle el comando simple.
@@ -242,7 +280,12 @@ void pipeline_push_back(pipeline self, scommand sc);
  * Ensures: !pipeline_is_empty()
  */
 
-void pipeline_pop_front(pipeline self);
+void pipeline_pop_front(pipeline self){
+  assert(self !=NULL);
+  assert(!pipeline_is_empty(self));
+  //llenar el codigo aca
+}
+
 /*
  * Quita el comando simple de adelante de la secuencia.
  *   self: pipeline al cual sacarle el comando simple del frente.
@@ -250,7 +293,11 @@ void pipeline_pop_front(pipeline self);
  * Requires: self!=NULL && !pipeline_is_empty(self)
  */
 
-void pipeline_set_wait(pipeline self, const bool w);
+void pipeline_set_wait(pipeline self, const bool w){
+  assert(self != NULL);
+  //llenar el codigo aca
+}
+
 /*
  * Define si el pipeline tiene que esperar o no.
  *   self: pipeline que quiere ser establecido en su atributo de espera.
@@ -259,7 +306,11 @@ void pipeline_set_wait(pipeline self, const bool w);
 
 /* Proyectores */
 
-bool pipeline_is_empty(const pipeline self);
+bool pipeline_is_empty(const pipeline self){
+  assert(self!=NULL);  
+  //llenar el codigo aca
+}
+
 /*
  * Indica si la secuencia de comandos simples tiene longitud 0.
  *   self: pipeline a decidir si está vacío.
@@ -267,7 +318,12 @@ bool pipeline_is_empty(const pipeline self);
  * Requires: self!=NULL
  */
 
-unsigned int pipeline_length(const pipeline self);
+unsigned int pipeline_length(const pipeline self){
+  assert(self!=NULL);
+  //llenar el codigo aca
+  assert((pipeline_length(self)==0) == pipeline_is_empty(self));
+}
+
 /*
  * Da la longitud de la secuencia de comandos simples.
  *   self: pipeline a medir.
@@ -277,7 +333,13 @@ unsigned int pipeline_length(const pipeline self);
  *
  */
 
-scommand pipeline_front(const pipeline self);
+scommand pipeline_front(const pipeline self){
+  assert(self!=NULL);
+  assert(!pipeline_is_empty(self));
+  //llenar el codigo aca
+  assert(result!=NULL);// crear la variable result
+}
+
 /*
  * Devuelve el comando simple de adelante de la secuencia.
  *   self: pipeline al cual consultar cual es el comando simple del frente.
@@ -289,7 +351,10 @@ scommand pipeline_front(const pipeline self);
  * Ensures: result!=NULL
  */
 
-bool pipeline_get_wait(const pipeline self);
+bool pipeline_get_wait(const pipeline self){
+  assert(self!=NULL);
+}
+
 /*
  * Consulta si el pipeline tiene que esperar o no.
  *   self: pipeline a decidir si hay que esperar.
@@ -297,7 +362,13 @@ bool pipeline_get_wait(const pipeline self);
  * Requires: self!=NULL
  */
 
-char * pipeline_to_string(const pipeline self);
+char * pipeline_to_string(const pipeline self){
+  assert(self!=NULL);
+  //llenar el codigo aca
+
+  assert(pipeline_is_empty(self) || pipeline_get_wait(self) || strlen(result)>0); // crear la variable result
+}
+
 /* Pretty printer para hacer debugging/logging.
  * Genera una representación del pipeline en una cadena (aka "serializar").
  *   self: pipeline a convertir.
