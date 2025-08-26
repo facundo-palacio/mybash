@@ -2,6 +2,7 @@
 #include <glib-2.0/glib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "command.h"
 #include "strextra.h"
@@ -189,7 +190,8 @@ char * scommand_to_string(const scommand self){
     }
     str = strmerge(str, g_queue_peek_nth(gq_aux,i));
   }
-  assert(scommand_is_empty(self)|| scommand_get_redir_in(self) ==NULL || scommand_get_redir_out(self)==NULL);
+  assert(scommand_is_empty(self)|| scommand_get_redir_in(self) ==NULL || scommand_get_redir_out(self)==NULL ||
+         strlen(str)>0);
   return str;
 }
 /* Preety printer para hacer debugging/logging.
@@ -269,7 +271,7 @@ pipeline pipeline_destroy(pipeline self){
 void pipeline_push_back(pipeline self, scommand sc){
   assert(self != NULL);
   assert(sc != NULL);
-  //llenar el codigo aca
+  g_queue_push_tail(self->gq_scommand,sc);
   assert(!pipeline_is_empty(self));
 }
 
@@ -284,7 +286,7 @@ void pipeline_push_back(pipeline self, scommand sc){
 void pipeline_pop_front(pipeline self){
   assert(self !=NULL);
   assert(!pipeline_is_empty(self));
-  //llenar el codigo aca
+  g_queue_pop_head(self ->gq_scommand);
 }
 
 /*
@@ -296,7 +298,7 @@ void pipeline_pop_front(pipeline self){
 
 void pipeline_set_wait(pipeline self, const bool w){
   assert(self != NULL);
-  //llenar el codigo aca
+  self ->run_in_foreground = w;
 }
 
 /*
@@ -309,7 +311,7 @@ void pipeline_set_wait(pipeline self, const bool w){
 
 bool pipeline_is_empty(const pipeline self){
   assert(self!=NULL);  
-  //llenar el codigo aca
+  return g_queue_is_empty(self->gq_scommand);
 }
 
 /*
@@ -321,8 +323,9 @@ bool pipeline_is_empty(const pipeline self){
 
 unsigned int pipeline_length(const pipeline self){
   assert(self!=NULL);
-  //llenar el codigo aca
-  assert((pipeline_length(self)==0) == pipeline_is_empty(self));
+  unsigned int len = g_queue_get_length(self->gq_scommand);
+  assert((len==0) == (pipeline_is_empty(self)));
+  return len;
 }
 
 /*
@@ -337,8 +340,10 @@ unsigned int pipeline_length(const pipeline self){
 scommand pipeline_front(const pipeline self){
   assert(self!=NULL);
   assert(!pipeline_is_empty(self));
-  //llenar el codigo aca
+  scommand result = g_queue_peek_head(self->gq_scommand);
   assert(result!=NULL);// crear la variable result
+  return result;
+  
 }
 
 /*
@@ -354,6 +359,7 @@ scommand pipeline_front(const pipeline self){
 
 bool pipeline_get_wait(const pipeline self){
   assert(self!=NULL);
+  return self->run_in_foreground;
 }
 
 /*
@@ -365,9 +371,18 @@ bool pipeline_get_wait(const pipeline self){
 
 char * pipeline_to_string(const pipeline self){
   assert(self!=NULL);
-  //llenar el codigo aca
-
-  assert(pipeline_is_empty(self) || pipeline_get_wait(self) || strlen(result)>0); // crear la variable result
+  assert(self!=NULL);
+  char *str = "";
+  GQueue *gq_sc_aux = self->gq_scommand;
+  guint N = g_queue_get_length(gq_sc_aux);
+  for(guint i=0; i<N; i++) {
+    if(i>0) {
+      str = strmerge(str, " ");
+    }
+    str = strmerge(str, g_queue_peek_nth(gq_sc_aux,i));
+  }
+  assert(pipeline_is_empty(self) || pipeline_get_wait(self) || strlen(str)>0);
+  return str;
 }
 
 /* Pretty printer para hacer debugging/logging.
