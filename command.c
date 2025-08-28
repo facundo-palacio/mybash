@@ -57,7 +57,7 @@ scommand scommand_new(void) {
 
 scommand scommand_destroy(scommand self){
     assert(self !=NULL);
-    g_queue_free(self->gq);
+    g_queue_free_full(self->gq, free);
     free(self -> in);
     free(self-> out);
     free(self);
@@ -184,12 +184,25 @@ char * scommand_to_string(const scommand self){
   char *str = "";
   GQueue *gq_aux = self->gq;
   guint N = g_queue_get_length(gq_aux);
+
   for(guint i=0; i<N; i++) {
     if(i>0) {
       str = strmerge(str, " ");
     }
     str = strmerge(str, g_queue_peek_nth(gq_aux,i));
   }
+  if(scommand_get_redir_out(self->out)!=NULL){
+    str= strmerge(str, ">");
+    str = strmerge(str, " ");
+    str = strmerge(str, scommand_get_redir_out(self->out));      
+  }
+  
+  if(scommand_get_redir_out(self->in)!=NULL){
+    str= strmerge(str, "<");
+    str = strmerge(str, " ");
+    str = strmerge(str, scommand_get_redir_in(self->in));      
+  }
+
   assert(scommand_is_empty(self)|| scommand_get_redir_in(self) ==NULL || scommand_get_redir_out(self)==NULL ||
          strlen(str)>0);
   return str;
@@ -376,14 +389,17 @@ char * pipeline_to_string(const pipeline self){
   GQueue *gq_sc_aux = self->gq_scommand;
   guint N = g_queue_get_length(gq_sc_aux);
   for(guint i=0; i<N; i++) {
-    if(i>0) {
-      str = strmerge(str, " ");
-    }
-    str = strmerge(str, g_queue_peek_nth(gq_sc_aux,i));
+      if(i>0) {
+          str = strmerge(str, "|");
+   }
+      str = strmerge(str, scommand_to_string(g_queue_peek_nth(gq_sc_aux,i)));  
   }
   assert(pipeline_is_empty(self) || pipeline_get_wait(self) || strlen(str)>0);
   return str;
+    
 }
+
+
 
 /* Pretty printer para hacer debugging/logging.
  * Genera una representación del pipeline en una cadena (aka "serializar").
