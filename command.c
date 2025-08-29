@@ -191,16 +191,16 @@ char * scommand_to_string(const scommand self){
     }
     str = strmerge(str, g_queue_peek_nth(gq_aux,i));
   }
-  if(scommand_get_redir_out(self->out)!=NULL){
+  if(scommand_get_redir_out(self)!=NULL){
     str= strmerge(str, ">");
     str = strmerge(str, " ");
-    str = strmerge(str, scommand_get_redir_out(self->out));      
+    str = strmerge(str, scommand_get_redir_out(self));      
   }
   
-  if(scommand_get_redir_out(self->in)!=NULL){
+  if(scommand_get_redir_out(self)!=NULL){
     str= strmerge(str, "<");
     str = strmerge(str, " ");
-    str = strmerge(str, scommand_get_redir_in(self->in));      
+    str = strmerge(str, scommand_get_redir_in(self));      
   }
 
   assert(scommand_is_empty(self)|| scommand_get_redir_in(self) ==NULL || scommand_get_redir_out(self)==NULL ||
